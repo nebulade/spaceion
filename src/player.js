@@ -1,6 +1,6 @@
 "using strict";
 
-function Player(id) {
+function Player() {
     this.x = 0;
     this.y = 0;
     this.w = 96/1.5;

@@ -17,12 +17,15 @@ var game;
 var shots = shots || {};
 var enemies = enemies || {};
 
-function Game(id) {
-    this.w = window.innerWidth;
-    this.h = window.innerHeight;
-    this.x = 0;
-    this.y = 0;
-    this.elem = window.document.getElementById(id);
+function Game() {
+    this.w = window.innerWidth < 500 ? window.innerWidth : 500;
+    this.h = window.innerHeight < 900 ? window.innerHeight: 900;
+    this.x = window.innerWidth < 500 ? 0 : (window.innerWidth/2 - this.w/2);
+    this.y = window.innerHeight < 900 ? 0 : (window.innerHeight/2 - this.h/2);
+
+    this.elem = window.document.createElement('div');
+    this.elem.className = "Game";
+    window.document.body.appendChild(this.elem);
 
     return this;
 }
@@ -120,12 +123,15 @@ function handleTouchEndEvents(event) {
     player.fire = false;
 }
 
-function gameInit() {
-    game = new Game('game');
-    player = new Player('player');
+function initGame() {
+    game = new Game();
+    player = new Player();
     initBullets(10);
     initEnemies(10);
     game.createStats();
+
+    // init starfield
+    initStarfield(game.x, game.y, game.w, game.h);
 
     document.body.addEventListener("keydown", handleKeyDownEvents, false);
     document.body.addEventListener("keyup", handleKeyUpEvents, false);

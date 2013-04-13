@@ -25,10 +25,15 @@ function init_star( star, initial )
     star[5] = Math.floor(Math.random() * 4) + 2 // size
 }
 
-function init()
+function initStarfield(x, y, w, h)
 {
-    document.getElementById('starfield').width = CONSTANT.canvas_width;
-    document.getElementById('starfield').height = CONSTANT.canvas_height;
+    CONSTANT.canvas_width = w;
+    CONSTANT.canvas_height = h;
+
+    document.getElementById('starfield').width = w;
+    document.getElementById('starfield').height = h;
+    document.getElementById('starfield').style.left = x;
+    document.getElementById('starfield').style.top = y;
 
     ctx = document.getElementById('starfield').getContext('2d');
 

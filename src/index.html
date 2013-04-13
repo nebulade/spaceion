@@ -2,10 +2,10 @@
     <head>
         <title> SpaceIon </title>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, target-densitydpi=device-dpi" />
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, target-densitydpi=device-dpi" />
         <meta name="apple-mobile-web-app-capable" content="yes"/>
 
-        <link rel="stylesheet" href="star.css"/>
+        <link rel="stylesheet" href="game.css"/>
         <script src="bullet.js"></script>
         <script src="enemy.js"></script>
         <script src="player.js"></script>
@@ -13,11 +13,9 @@
         <script src="starfield.js"></script>
 
     </head>
-    <body onload="init(); gameInit();">
+    <body onload="initGame();">
 
         <canvas id="starfield" class="Starfield"></canvas>
-
-        <div id="game" class="game"></div>
 
     </body>
 </html>
