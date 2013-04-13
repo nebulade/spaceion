@@ -122,7 +122,7 @@ Enemy.prototype.advance = function () {
 
     this.y += this.speed;
 
-    if ((this.y + this.h) > game.h) {
+    if (this.y > game.h) {
         this.destroy();
         return false;
     }
