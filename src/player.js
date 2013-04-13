@@ -1,4 +1,17 @@
-"using strict";
+"use strict";
+
+var Weapons = {
+    Laser: {
+        name: "Laser",
+        damage: 10,
+        image: "space_starter_kit/projectile1.png"
+    },
+    Phaser: {
+        name: "Phaser",
+        damage: 20,
+        image: "space_starter_kit/projectile2.png"
+    }
+};
 
 function Player() {
     this.x = 0;
@@ -15,6 +28,7 @@ function Player() {
     this.score = 0;
     this.died = false;
     this.level = 1;
+    this.weapon = Weapons.Laser;
 
     this.elem = window.document.createElement('div');
     this.elem.className = "Player";
@@ -33,6 +47,7 @@ Player.prototype.reset = function () {
     this.x = game.w/2 - this.w/2;
     this.elem.style.opacity = 1;
     this.died = false;
+    this.weapon = Weapons.Laser;
 };
 
 Player.prototype.die = function () {
@@ -57,13 +72,13 @@ Player.prototype.doFire = function () {
         return;
     }
 
-    var shot = allocateBullet();
-    if (!shot) {
+    var bullet = allocateBullet();
+    if (!bullet) {
         return;
     }
 
-    shot.init();
-    shots[shot.id] = shot;
+    bullet.init();
+    bullets[bullet.id] = bullet;
 
     this.cooldown = true;
     window.setTimeout(function () {
@@ -86,6 +101,10 @@ Player.prototype.advance = function () {
 
     if (this.score > this.level * 2) {
         ++this.level;
+        if (this.level > 3) {
+            this.weapon = Weapons.Phaser;
+        }
+
         if (this.cooldownTime > 100) {
             this.cooldownTime = this.cooldownTime / 1.2;
         }

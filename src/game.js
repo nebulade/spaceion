@@ -15,7 +15,7 @@ window.requestAnimFrame = (function () {
 var player;
 var game;
 var starfield;
-var shots = shots || {};
+var bullets = bullets || {};
 var enemies = enemies || {};
 
 function Game() {
@@ -58,9 +58,9 @@ function advance() {
     if (!player.died)
         player.advance();
 
-    for (i in shots) {
-        if (shots.hasOwnProperty(i)) {
-            shots[i].advance();
+    for (i in bullets) {
+        if (bullets.hasOwnProperty(i)) {
+            bullets[i].advance();
         }
     }
 
@@ -76,13 +76,14 @@ function advance() {
                 }
 
                 // collide with bullets
-                for (j in shots) {
-                    if (shots.hasOwnProperty(j)) {
-                        if (e.collides(shots[j])) {
+                for (j in bullets) {
+                    if (bullets.hasOwnProperty(j)) {
+                        if (e.collides(bullets[j])) {
                             // only increase score if enemy is down
-                            if (e.destroy())
+                            if (e.hit(bullets[j].weapon.damage)) {
                                 ++player.score;
-                            shots[j].destroy();
+                            }
+                            bullets[j].destroy();
                             break;
                         }
                     }

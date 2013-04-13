@@ -51,7 +51,7 @@ Enemy.prototype.init = function () {
     this.elem.className = "Enemy";
     this.elem.style.visibility = "visible";
     this.destroyed = false;
-    this.lives = 4;
+    this.energy = 40;
 };
 
 Enemy.prototype.collides = function (object) {
@@ -75,15 +75,21 @@ Enemy.prototype.collides = function (object) {
     }
 };
 
+Enemy.prototype.hit = function (damage) {
+    this.energy -= damage;
+
+    if (this.energy <= 0) {
+        this.destroy();
+        return true;
+    }
+
+    return false;
+};
+
 Enemy.prototype.destroy = function () {
     var that = this;
 
     if (this.destroyed) {
-        return false;
-    }
-
-    if (this.lives > 0) {
-        --this.lives;
         return false;
     }
 
@@ -127,7 +133,7 @@ Enemy.prototype.advance = function () {
         return false;
     }
 
-    if (this.lives <= 2 && this.className !== "EnemyDamaged") {
+    if (this.energy <= 10 && this.className !== "EnemyDamaged") {
         this.elem.className = "EnemyDamaged";
     }
 

@@ -1,9 +1,11 @@
-var shots = shots || {};
+"use strict";
+
+var bullets = bullets || {};
 var freeBullets = [];
 
 function initBullets(amount) {
     for (var i = 0; i < amount; ++i) {
-        freeBullets.push(new Shot());
+        freeBullets.push(new Bullet());
     }
 }
 
@@ -15,34 +17,38 @@ function deallocateBullet(bullet) {
     freeBullets.push(bullet);
 }
 
-function Shot() {
+function Bullet () {
     this.id = Math.random();
+
     this.elem = window.document.createElement('div');
-    this.elem.style.position = "absolute";
-    game.elem.appendChild(this.elem);
-    this.speed = -10;
-    this.elem.style.visibility = "hidden";
     this.elem.className = "Bullet";
+    game.elem.appendChild(this.elem);
+
+    this.speed = -10;
+
+    this.type = player.weapon;
 
     return this;
 }
 
-Shot.prototype.init = function () {
+Bullet.prototype.init = function () {
     this.w = 20;
     this.h = 40;
     this.x = player.x + (player.w/2 - this.w/2);
     this.y = player.y;
+    this.weapon = player.weapon;
 
+    this.elem.style.backgroundImage = "url('" + this.weapon.image + "')";//;
     this.elem.style.visibility = "visible";
 };
 
-Shot.prototype.destroy = function () {
+Bullet.prototype.destroy = function () {
     this.elem.style.visibility = "hidden";
     deallocateBullet(this);
-    delete shots[this.id];
+    delete bullets[this.id];
 };
 
-Shot.prototype.advance = function () {
+Bullet.prototype.advance = function () {
     this.y += this.speed;
 
     if (this.y < 0) {
@@ -54,7 +60,7 @@ Shot.prototype.advance = function () {
     return true;
 };
 
-Shot.prototype.render = function () {
+Bullet.prototype.render = function () {
     this.elem.style.left = this.x;
     this.elem.style.top = this.y;
     this.elem.style.width = this.w;
