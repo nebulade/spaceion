@@ -1,81 +1,70 @@
+"use strict";
 
-var stars = new Array(5000);
-var star_amount = 200;
-var ctx;
+function Starfield (parent) {
+    this.parent = parent;
+    this.w = parent.w;
+    this.h = parent.h;
+    this.x = 0;
+    this.y = 0;
 
-var CONSTANT = { canvas_width : window.innerWidth, canvas_height : window.innerHeight };
+    this.elem = window.document.createElement('canvas');
+    this.elem.className = "Starfield";
+    this.parent.elem.appendChild(this.elem);
 
-function init_star( star, initial )
-{
-    // origin is in the center of the canvas
-    star[0] = Math.floor((Math.random() - 0.5) * CONSTANT.canvas_width * 10); // x
-    star[1] = Math.floor((Math.random() - 0.5) * CONSTANT.canvas_height * 10); // y
+    this.stars = new Array(200);
 
-    if(initial)
-    {
-	star[2] = Math.floor(Math.random() * 14) + 1; // z
-	star[4] = Math.floor(Math.random() * 5) + 0.4; // speed
+    this.elem.width = this.w;
+    this.elem.height = this.h;
+    this.elem.style.left = this.x;
+    this.elem.style.top = this.y;
+
+    this.ctx = this.elem.getContext('2d');
+
+    for (var i = 0; i < this.stars.length; i++) {
+        this.stars[i] = new Array(5);
+        this.initStar(this.stars[i], true);
     }
-    else
-    {
-	star[2] = 15; // z
+
+    return this;
+}
+
+Starfield.prototype.initStar = function (star, initial) {
+    // origin is in the center of the canvas
+    star[0] = Math.floor((Math.random() - 0.5) * this.w * 10); // x
+    star[1] = Math.floor((Math.random() - 0.5) * this.h * 10); // y
+
+    if (initial) {
+        star[2] = Math.floor(Math.random() * 14) + 1; // z
+        star[4] = Math.floor(Math.random() * 5) + 0.4; // speed
+    } else {
+        star[2] = 15; // z
     }
 
     star[3] = Math.floor(Math.random() * 196) + 60; // brightness
-    star[5] = Math.floor(Math.random() * 4) + 2 // size
-}
+    star[5] = Math.floor(Math.random() * 4) + 2; // size
+};
 
-function initStarfield(x, y, w, h)
-{
-    CONSTANT.canvas_width = w;
-    CONSTANT.canvas_height = h;
+Starfield.prototype.advance = function () {
+    this.ctx.clearRect(0, 0, this.w, this.h); // clear canvas
 
-    document.getElementById('starfield').width = w;
-    document.getElementById('starfield').height = h;
-    document.getElementById('starfield').style.left = x;
-    document.getElementById('starfield').style.top = y;
+    for(var i = 0; i < this.stars.length; i++) {
+        var x = this.stars[i][0] / this.stars[i][2] + this.w / 2;
+        var y = this.stars[i][1] / this.stars[i][2] + this.h / 2;
+        var brightness = Math.floor(this.stars[i][3] / (this.stars[i][2] / 5));
+        var size = Math.floor(this.stars[i][5] / (this.stars[i][2] / 4));
 
-    ctx = document.getElementById('starfield').getContext('2d');
+        if (brightness > 255) brightness = 255;
 
-    for(var i = 0; i < stars.length; i++)
-    {
-	stars[i] = new Array(5);
-	init_star(stars[i], true);
+        if (size < 2) size = 2;
+        if (size > 3) size = 3;
+
+        if (this.stars[i][2] < 0 || x > this.w || x < 0 || y > (this.h - 5 - 20 - 5 ) || y < 0) {
+            this.initStar(this.stars[i], false);
+        } else {
+            this.ctx.fillStyle = "rgb(" + brightness + "," + brightness + "," + brightness + ")";
+            this.ctx.fillRect(x, y, size, size);
+            this.stars[i][2] = this.stars[i][2] - this.stars[i][4] / 50;
+        }
     }
-
-    var nn = (document.layers) ? true : false;
-    var ie = (document.all) ? true : false;
-
-    setInterval(draw,Math.floor(1000 / 25 ));
-}
-
-function draw()
-{
-    ctx.clearRect(0, 0, CONSTANT.canvas_width, CONSTANT.canvas_height - 5 - 21 ); // clear canvas
-
-    for(var i = 0; i < star_amount; i++)
-    {
-	var x = stars[i][0] / stars[i][2] + CONSTANT.canvas_width / 2;
-	var y = stars[i][1] / stars[i][2] + CONSTANT.canvas_height / 2;
-	var brightness = Math.floor(stars[i][3] / ( stars[i][2] / 5));
-	var size = Math.floor(stars[i][5] / ( stars[i][2] / 4));
-
-	if (brightness > 255) brightness = 255;
-
-	if (size < 2) size = 2;
-	if (size > 3) size = 3;
-
-	if (stars[i][2] < 0 || x > CONSTANT.canvas_width || x < 0 ||
-	    y > (CONSTANT.canvas_height - 5 - 20 - 5 ) || y < 0) // 5 for safety
-	{
-	    init_star(stars[i], false);
-	}
-	else
-	{
-	    ctx.fillStyle = "rgb(" + brightness + "," + brightness + "," + brightness + ")";
-	    ctx.fillRect(x,y,size,size);
-	    stars[i][2] = stars[i][2] - stars[i][4] / 50;
-	}
-    }
-}
+};
 

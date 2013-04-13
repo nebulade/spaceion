@@ -14,6 +14,7 @@ window.requestAnimFrame = (function () {
 
 var player;
 var game;
+var starfield;
 var shots = shots || {};
 var enemies = enemies || {};
 
@@ -51,6 +52,8 @@ function advance() {
     var i, j;
 
     window.requestAnimFrame(advance);
+
+    starfield.advance();
 
     if (!player.died)
         player.advance();
@@ -125,13 +128,11 @@ function handleTouchEndEvents(event) {
 
 function initGame() {
     game = new Game();
+    starfield = new Starfield(game);
     player = new Player();
     initBullets(10);
     initEnemies(10);
     game.createStats();
-
-    // init starfield
-    initStarfield(game.x, game.y, game.w, game.h);
 
     document.body.addEventListener("keydown", handleKeyDownEvents, false);
     document.body.addEventListener("keyup", handleKeyUpEvents, false);
