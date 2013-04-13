@@ -20,7 +20,7 @@ var enemies = enemies || {};
 
 function Game() {
     this.w = window.innerWidth < 500 ? window.innerWidth : 500;
-    this.h = window.innerHeight < 900 ? window.innerHeight: 900;
+    this.h = window.innerHeight < 900 ? window.innerHeight : 900;
     this.x = window.innerWidth < 500 ? 0 : (window.innerWidth/2 - this.w/2);
     this.y = window.innerHeight < 900 ? 0 : (window.innerHeight/2 - this.h/2);
 
@@ -117,14 +117,17 @@ function handleKeyUpEvents(event) {
 
 function handleTouchStartEvents(event) {
     player.fire = true;
+    event.preventDefault();
 }
 
 function handleTouchMoveEvents(event) {
     player.setPos(event.touches[0].pageX - player.w/2, event.touches[0].pageY - 150);
+    event.preventDefault();
 }
 
 function handleTouchEndEvents(event) {
     player.fire = false;
+    event.preventDefault();
 }
 
 function initGame() {
