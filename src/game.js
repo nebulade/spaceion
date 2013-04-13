@@ -18,6 +18,8 @@ var starfield;
 var bullets = bullets || {};
 var enemies = enemies || {};
 
+var playerTouchOffset = 100;
+
 function Game() {
     this.w = window.innerWidth < 500 ? window.innerWidth : 500;
     this.h = window.innerHeight < 900 ? window.innerHeight : 900;
@@ -121,7 +123,9 @@ function handleTouchStartEvents(event) {
 }
 
 function handleTouchMoveEvents(event) {
-    player.setPos(event.touches[0].pageX - player.w/2, event.touches[0].pageY - 150);
+    var x = (event.pageX || event.targetTouches[0].pageX) - game.x;
+    var y = (event.pageY || event.targetTouches[0].pageY) - game.y;
+    player.setPos(x - player.w/2, y - playerTouchOffset);
     event.preventDefault();
 }
 
@@ -140,9 +144,16 @@ function initGame() {
 
     document.body.addEventListener("keydown", handleKeyDownEvents, false);
     document.body.addEventListener("keyup", handleKeyUpEvents, false);
-    document.body.addEventListener("touchstart", handleTouchStartEvents, false);
-    document.body.addEventListener("touchend", handleTouchEndEvents, false);
-    document.body.addEventListener("touchmove", handleTouchMoveEvents, false);
+
+    if (window.navigator.msPointerEnabled) {
+        document.body.addEventListener("MSPointerDown", handleTouchStartEvents, false);
+        document.body.addEventListener("MSPointerMove", handleTouchMoveEvents, false);
+        document.body.addEventListener("MSPointerUp", handleTouchEndEvents, false);
+    } else {
+        document.body.addEventListener("touchstart", handleTouchStartEvents, false);
+        document.body.addEventListener("touchmove", handleTouchMoveEvents, false);
+        document.body.addEventListener("touchend", handleTouchEndEvents, false);
+    }
 
     player.reset();
     game.render();
