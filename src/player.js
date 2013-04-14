@@ -37,7 +37,7 @@ function Player() {
     this.speed = 10;
     this.cooldown = false;
     this.cooldownTime = 400;
-    this.lifes = 10;
+    this.lifes = 5;
     this.score = 0;
     this.died = false;
     this.level = 1;
@@ -91,6 +91,7 @@ Player.prototype.die = function () {
 
     if (this.lifes < 0) {
         this.score = 0;
+        this.lifes = 5;
     }
 
     window.setTimeout(function () {
