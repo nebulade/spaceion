@@ -50,7 +50,6 @@ function Enemy() {
 Enemy.prototype.init = function () {
     this.x = Math.random() * game.w;
     this.y = -this.h;
-    this.render();
     this.fire = false;
     this.elem.className = "Enemy";
     this.elem.style.visibility = "visible";
@@ -169,14 +168,10 @@ Enemy.prototype.advance = function (ctx) {
     //     ctx.fillRect(b.x, b.y, b.w, b.h);
     // }
 
-    this.render();
-
-    return true;
-};
-
-Enemy.prototype.render = function () {
     this.elem.style.left = this.x;
     this.elem.style.top = this.y;
     this.elem.style.width = this.w;
     this.elem.style.height = this.h;
+
+    return true;
 };

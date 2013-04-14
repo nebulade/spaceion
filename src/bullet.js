@@ -69,17 +69,16 @@ Bullet.prototype.advance = function (ctx) {
     }
 
     this.updateBoundingRects();
+
     // for (var i = 0; i < this.boundingRects.length; ++i) {
     //     var b = this.boundingRects[i];
     //     ctx.fillRect(b.x, b.y, b.w, b.h);
     // }
-    this.render();
-    return true;
-};
 
-Bullet.prototype.render = function () {
     this.elem.style.left = this.x;
     this.elem.style.top = this.y;
     this.elem.style.width = this.w;
     this.elem.style.height = this.h;
+
+    return true;
 };

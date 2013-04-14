@@ -170,10 +170,7 @@ Player.prototype.advance = function (ctx) {
     //     var b = this.boundingRects[i];
     //     ctx.fillRect(b.x, b.y, b.w, b.h);
     // }
-    this.render();
-};
 
-Player.prototype.render = function () {
     this.elem.style.left = this.x;
     this.elem.style.top = this.y;
     this.elem.style.width = this.w;
