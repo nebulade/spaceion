@@ -1,5 +1,8 @@
 "use strict";
 
+var bullets = bullets || {};
+var game = game || {};
+
 var Weapons = {
     Laser: {
         name: "Laser",
@@ -7,6 +10,16 @@ var Weapons = {
         image: "space_starter_kit/projectile1.png"
     },
     Phaser: {
+        name: "Phaser",
+        damage: 20,
+        image: "space_starter_kit/projectile2.png"
+    },
+    TripleLaser: {
+        name: "Laser",
+        damage: 10,
+        image: "space_starter_kit/projectile1.png"
+    },
+    TriplePhaser: {
         name: "Phaser",
         damage: 20,
         image: "space_starter_kit/projectile2.png"
@@ -29,6 +42,9 @@ function Player() {
     this.died = false;
     this.level = 1;
     this.weapon = Weapons.Laser;
+    this.boundingRects = [
+        { ox: 0, oy: 0, x: 0, y: 0, w: this.w, h: this.h }
+    ];
 
     this.elem = window.document.createElement('div');
     this.elem.className = "Player";
@@ -36,6 +52,13 @@ function Player() {
 
     return this;
 }
+
+Player.prototype.updateBoundingRects = function () {
+    for (var i = 0; i < this.boundingRects.length; ++i) {
+        this.boundingRects[i].x = this.boundingRects[i].ox + this.x;
+        this.boundingRects[i].y = this.boundingRects[i].oy + this.y;
+    }
+};
 
 Player.prototype.setPos = function (x, y) {
     this.y = y;
@@ -65,20 +88,45 @@ Player.prototype.die = function () {
     }, 1000);
 };
 
-Player.prototype.doFire = function () {
+Player.prototype.shoot = function () {
     var that = this;
+    var b1, b2, b3;
 
     if (this.cooldown) {
         return;
     }
 
-    var bullet = allocateBullet();
-    if (!bullet) {
-        return;
-    }
+    if (this.weapon === Weapons.TripleLaser || this.weapon === Weapons.TriplePhaser) {
+        b1 = allocateBullet();
+        b2 = allocateBullet();
+        b3 = allocateBullet();
+        if (!b1 || !b2 || !b3) {
+            b1 && deallocateBullet(b1);
+            b2 && deallocateBullet(b2);
+            b3 && deallocateBullet(b3);
+            return;
+        }
 
-    bullet.init();
-    bullets[bullet.id] = bullet;
+        b1.reset();
+        b2.reset();
+        b3.reset();
+
+        b2.x -= 20;
+        b2.y += 20;
+        b3.x += 20;
+        b3.y += 20;
+
+        bullets[b1.id] = b1;
+        bullets[b2.id] = b2;
+        bullets[b3.id] = b3;
+    } else {
+        b1 = allocateBullet();
+        if (!b1) {
+            return;
+        }
+        b1.reset();
+        bullets[b1.id] = b1;
+    }
 
     this.cooldown = true;
     window.setTimeout(function () {
@@ -86,7 +134,7 @@ Player.prototype.doFire = function () {
     }, this.cooldownTime);
 };
 
-Player.prototype.advance = function () {
+Player.prototype.advance = function (ctx) {
     if (this.moveRight) {
         this.x += this.speed;
         this.x = (this.x + this.w) > game.w ? (game.w - this.w) : this.x;
@@ -96,12 +144,16 @@ Player.prototype.advance = function () {
     }
 
     if (this.fire) {
-        this.doFire();
+        this.shoot();
     }
 
-    if (this.score > this.level * 2) {
+    if (this.score > this.level) {
         ++this.level;
-        if (this.level > 3) {
+        if (this.level > 9) {
+            this.weapon = Weapons.TriplePhaser;
+        } else if (this.level > 6) {
+            this.weapon = Weapons.TripleLaser;
+        } else if (this.level > 3) {
             this.weapon = Weapons.Phaser;
         }
 
@@ -110,6 +162,7 @@ Player.prototype.advance = function () {
         }
     }
 
+    this.updateBoundingRects();
     this.render();
 };
 

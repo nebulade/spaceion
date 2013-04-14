@@ -19,21 +19,33 @@ function deallocateBullet(bullet) {
 
 function Bullet () {
     this.id = Math.random();
+    this.w = 20;
+    this.h = 40;
+    this.x = 0;
+    this.y = 0;
 
     this.elem = window.document.createElement('div');
     this.elem.className = "Bullet";
     game.elem.appendChild(this.elem);
 
     this.speed = -10;
+    this.boundingRects = [
+        { ox: 0, oy: 0, x: 0, y: 0, w: this.w, h: this.h }
+    ];
 
     this.type = player.weapon;
 
     return this;
 }
 
-Bullet.prototype.init = function () {
-    this.w = 20;
-    this.h = 40;
+Bullet.prototype.updateBoundingRects = function () {
+    for (var i = 0; i < this.boundingRects.length; ++i) {
+        this.boundingRects[i].x = this.boundingRects[i].ox + this.x;
+        this.boundingRects[i].y = this.boundingRects[i].oy + this.y;
+    }
+};
+
+Bullet.prototype.reset = function () {
     this.x = player.x + (player.w/2 - this.w/2);
     this.y = player.y;
     this.weapon = player.weapon;
@@ -56,6 +68,7 @@ Bullet.prototype.advance = function () {
         return false;
     }
 
+    this.updateBoundingRects();
     this.render();
     return true;
 };

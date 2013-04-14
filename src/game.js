@@ -26,6 +26,16 @@ function Game() {
     this.x = window.innerWidth < 500 ? 0 : (window.innerWidth/2 - this.w/2);
     this.y = window.innerHeight < 900 ? 0 : (window.innerHeight/2 - this.h/2);
 
+    this.canvas = window.document.createElement('canvas');
+    this.canvas.className = "Starfield";
+    this.canvas.width = this.w;
+    this.canvas.height = this.h;
+    this.canvas.style.left = this.x;
+    this.canvas.style.top = this.y;
+    window.document.body.appendChild(this.canvas);
+
+    this.ctx = this.canvas.getContext('2d');
+
     this.elem = window.document.createElement('div');
     this.elem.className = "Game";
     window.document.body.appendChild(this.elem);
@@ -55,21 +65,24 @@ function advance() {
 
     window.requestAnimFrame(advance);
 
-    starfield.advance();
+    // clear canvas
+    game.ctx.clearRect(0, 0, game.w, game.h);
+
+    starfield.advance(game.ctx);
 
     if (!player.died)
-        player.advance();
+        player.advance(game.ctx);
 
     for (i in bullets) {
         if (bullets.hasOwnProperty(i)) {
-            bullets[i].advance();
+            bullets[i].advance(game.ctx);
         }
     }
 
     for (i in enemies) {
         if (enemies.hasOwnProperty(i)) {
             var e = enemies[i];
-            if (e.advance()) {
+            if (e.advance(game.ctx)) {
                 // collide with player
                 if (!player.died && e.collides(player)) {
                     player.die();

@@ -30,20 +30,24 @@ function spawnEnemy() {
 
 function Enemy() {
     this.id = Math.random();
+    this.x = 0;
+    this.y = 0;
+    this.w = 50;
+    this.h = 50;
     this.direction = "";
     this.speed = 2;
     this.dieDelay = 400;
+    this.boundingRects = [
+        { ox: 0, oy: 0, x: 0, y: 0, w: this.w, h: this.h }
+    ];
 
     this.elem = window.document.createElement('div');
-
     game.elem.appendChild(this.elem);
 
     return this;
 }
 
 Enemy.prototype.init = function () {
-    this.w = 50;
-    this.h = 50;
     this.x = Math.random() * game.w;
     this.y = -this.h;
     this.render();
@@ -54,11 +58,28 @@ Enemy.prototype.init = function () {
     this.energy = 40;
 };
 
-Enemy.prototype.collides = function (object) {
+Enemy.prototype.updateBoundingRects = function () {
+    for (var i = 0; i < this.boundingRects.length; ++i) {
+        this.boundingRects[i].x = this.boundingRects[i].ox + this.x;
+        this.boundingRects[i].y = this.boundingRects[i].oy + this.y;
+    }
+};
+
+Enemy.prototype.collideMany = function (rects) {
+    for (var i = 0; i < rects.length; ++i) {
+        for (var j = 0; j < this.boundingRects.length; ++j) {
+            if (this.collide(this.boundingRects[j], rects[i])) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+};
+
+Enemy.prototype.collide = function (a, b) {
     var horizontal = false;
     var vertical = false;
-    var a = this;
-    var b = object;
 
     if ((((b.x >= a.x) && (b.x <= (a.x+a.w))) || (((b.x+b.w) >= a.x) && (b.x+b.w) <= (a.x+a.w)))) {
         horizontal = true;
@@ -73,6 +94,10 @@ Enemy.prototype.collides = function (object) {
     } else {
         return false;
     }
+};
+
+Enemy.prototype.collides = function (object) {
+    return this.collideMany(object.boundingRects);
 };
 
 Enemy.prototype.hit = function (damage) {
@@ -137,6 +162,7 @@ Enemy.prototype.advance = function () {
         this.elem.className = "EnemyDamaged";
     }
 
+    this.updateBoundingRects();
     this.render();
 
     return true;
