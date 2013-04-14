@@ -57,7 +57,7 @@ Game.prototype.createStats = function () {
 };
 
 Game.prototype.updateStats = function () {
-    this.statsElement.innerHTML = "Lifes " + player.lives + "  |  Score " + player.score;
+    this.statsElement.innerHTML = "Lifes " + player.lifes + "  |  Score " + player.score;
 };
 
 function advance() {

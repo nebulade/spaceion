@@ -21,7 +21,7 @@ function spawnEnemy() {
     var e = allocateEnemy();
 
     if (e) {
-        e.init();
+        e.reset();
         enemies[e.id] = e;
     }
 
@@ -47,11 +47,15 @@ function Enemy() {
     return this;
 }
 
-Enemy.prototype.init = function () {
+Enemy.prototype.reset = function () {
     this.x = Math.random() * game.w;
     this.y = -this.h;
     this.fire = false;
     this.elem.className = "Enemy";
+    this.elem.style.left = this.x;
+    this.elem.style.top = this.y;
+    this.elem.style.width = this.w;
+    this.elem.style.height = this.h;
     this.elem.style.visibility = "visible";
     this.destroyed = false;
     this.energy = 40;
@@ -170,8 +174,6 @@ Enemy.prototype.advance = function (ctx) {
 
     this.elem.style.left = this.x;
     this.elem.style.top = this.y;
-    this.elem.style.width = this.w;
-    this.elem.style.height = this.h;
 
     return true;
 };

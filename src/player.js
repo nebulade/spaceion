@@ -37,7 +37,7 @@ function Player() {
     this.speed = 10;
     this.cooldown = false;
     this.cooldownTime = 400;
-    this.lives = 10;
+    this.lifes = 10;
     this.score = 0;
     this.died = false;
     this.level = 1;
@@ -70,6 +70,10 @@ Player.prototype.setPos = function (x, y) {
 Player.prototype.reset = function () {
     this.y = game.h - this.h - 10;
     this.x = game.w/2 - this.w/2;
+    this.elem.style.left = this.x;
+    this.elem.style.top = this.y;
+    this.elem.style.width = this.w;
+    this.elem.style.height = this.h;
     this.elem.style.opacity = 1;
     this.died = false;
     this.weapon = Weapons.Laser;
@@ -83,7 +87,11 @@ Player.prototype.die = function () {
 
     this.died = true;
     this.elem.style.opacity = 0;
-    --this.lives;
+    --this.lifes;
+
+    if (this.lifes < 0) {
+        this.score = 0;
+    }
 
     window.setTimeout(function () {
         that.reset();
@@ -173,6 +181,4 @@ Player.prototype.advance = function (ctx) {
 
     this.elem.style.left = this.x;
     this.elem.style.top = this.y;
-    this.elem.style.width = this.w;
-    this.elem.style.height = this.h;
 };

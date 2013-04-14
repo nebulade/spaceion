@@ -50,6 +50,10 @@ Bullet.prototype.reset = function () {
     this.y = player.y;
     this.weapon = player.weapon;
 
+    this.elem.style.left = this.x;
+    this.elem.style.top = this.y;
+    this.elem.style.width = this.w;
+    this.elem.style.height = this.h;
     this.elem.style.backgroundImage = "url('" + this.weapon.image + "')";//;
     this.elem.style.visibility = "visible";
 };
@@ -77,8 +81,6 @@ Bullet.prototype.advance = function (ctx) {
 
     this.elem.style.left = this.x;
     this.elem.style.top = this.y;
-    this.elem.style.width = this.w;
-    this.elem.style.height = this.h;
 
     return true;
 };
