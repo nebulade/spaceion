@@ -38,7 +38,7 @@ function Enemy() {
     this.speed = 2;
     this.dieDelay = 400;
     this.boundingRects = [
-        { ox: 0, oy: 0, x: 0, y: 0, w: this.w, h: this.h }
+        { x: 0, y: 0, w: this.w*0.7, h: this.h*0.7, ox: this.w*0.15, oy: this.h*0.15 }
     ];
 
     this.elem = window.document.createElement('div');
@@ -130,7 +130,7 @@ Enemy.prototype.destroy = function () {
     return true;
 };
 
-Enemy.prototype.advance = function () {
+Enemy.prototype.advance = function (ctx) {
     if (this.destroyed) {
         return false;
     }
@@ -163,6 +163,12 @@ Enemy.prototype.advance = function () {
     }
 
     this.updateBoundingRects();
+
+    // for (var i = 0; i < this.boundingRects.length; ++i) {
+    //     var b = this.boundingRects[i];
+    //     ctx.fillRect(b.x, b.y, b.w, b.h);
+    // }
+
     this.render();
 
     return true;

@@ -30,7 +30,7 @@ function Bullet () {
 
     this.speed = -10;
     this.boundingRects = [
-        { ox: 0, oy: 0, x: 0, y: 0, w: this.w, h: this.h }
+        { x: 0, y: 0, w: this.w*0.5, h: this.h*0.8, ox: this.w*0.25, oy: this.h*0.1 }
     ];
 
     this.type = player.weapon;
@@ -60,7 +60,7 @@ Bullet.prototype.destroy = function () {
     delete bullets[this.id];
 };
 
-Bullet.prototype.advance = function () {
+Bullet.prototype.advance = function (ctx) {
     this.y += this.speed;
 
     if (this.y < 0) {
@@ -69,6 +69,10 @@ Bullet.prototype.advance = function () {
     }
 
     this.updateBoundingRects();
+    // for (var i = 0; i < this.boundingRects.length; ++i) {
+    //     var b = this.boundingRects[i];
+    //     ctx.fillRect(b.x, b.y, b.w, b.h);
+    // }
     this.render();
     return true;
 };

@@ -43,7 +43,9 @@ function Player() {
     this.level = 1;
     this.weapon = Weapons.Laser;
     this.boundingRects = [
-        { ox: 0, oy: 0, x: 0, y: 0, w: this.w, h: this.h }
+        { x: 0, y: 0, w: this.w*0.3, h: this.h*0.3, ox: this.w*0.1, oy: this.h*0.6 },
+        { x: 0, y: 0, w: this.w*0.2, h: this.h*0.8, ox: this.w*0.4, oy: this.h*0.1 },
+        { x: 0, y: 0, w: this.w*0.3, h: this.h*0.3, ox: this.w*0.6, oy: this.h*0.6 }
     ];
 
     this.elem = window.document.createElement('div');
@@ -163,6 +165,11 @@ Player.prototype.advance = function (ctx) {
     }
 
     this.updateBoundingRects();
+
+    // for (var i = 0; i < this.boundingRects.length; ++i) {
+    //     var b = this.boundingRects[i];
+    //     ctx.fillRect(b.x, b.y, b.w, b.h);
+    // }
     this.render();
 };
 
