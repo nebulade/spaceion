@@ -60,15 +60,36 @@ Game.prototype.updateStats = function () {
     this.statsElement.innerHTML = "Lifes " + player.lifes + "  |  Score " + player.score;
 };
 
-function advance() {
-    var i, j;
+function render() {
+    var i;
 
-    window.requestAnimFrame(advance);
+    window.requestAnimFrame(render);
 
     // clear canvas
     game.ctx.clearRect(0, 0, game.w, game.h);
 
-    starfield.advance(game.ctx);
+    starfield.render(game.ctx);
+    player.render(game.ctx);
+
+    for (i in bullets) {
+        if (bullets.hasOwnProperty(i)) {
+            bullets[i].render(game.ctx);
+        }
+    }
+
+    for (i in enemies) {
+        if (enemies.hasOwnProperty(i)) {
+            enemies[i].render(game.ctx);
+        }
+    }
+}
+
+function gameloop() {
+    var i, j;
+
+    window.setTimeout(gameloop, 33);
+
+    starfield.advance();
 
     if (!player.died)
         player.advance(game.ctx);
@@ -151,7 +172,7 @@ function initGame() {
     game = new Game();
     starfield = new Starfield(game);
     player = new Player();
-    initBullets(10);
+    initBullets(100);
     initEnemies(10);
     game.createStats();
 
@@ -171,6 +192,8 @@ function initGame() {
     player.reset();
     game.render();
     spawnEnemy();
-    advance();
+
+    gameloop();
+    render();
 }
 

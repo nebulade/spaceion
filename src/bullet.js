@@ -28,12 +28,14 @@ function Bullet () {
     this.elem.className = "Bullet";
     game.elem.appendChild(this.elem);
 
-    this.speed = -10;
+    this.speed = -20;
     this.boundingRects = [
         { x: 0, y: 0, w: this.w*0.5, h: this.h*0.8, ox: this.w*0.25, oy: this.h*0.1 }
     ];
 
     this.type = player.weapon;
+    this.image = new Image();
+    this.image.src = player.weapon.image;
 
     return this;
 }
@@ -49,17 +51,10 @@ Bullet.prototype.reset = function () {
     this.x = player.x + (player.w/2 - this.w/2);
     this.y = player.y;
     this.weapon = player.weapon;
-
-    this.elem.style.left = this.x;
-    this.elem.style.top = this.y;
-    this.elem.style.width = this.w;
-    this.elem.style.height = this.h;
-    this.elem.style.backgroundImage = "url('" + this.weapon.image + "')";//;
-    this.elem.style.visibility = "visible";
 };
 
 Bullet.prototype.destroy = function () {
-    this.elem.style.visibility = "hidden";
+    // this.elem.style.visibility = "hidden";
     deallocateBullet(this);
     delete bullets[this.id];
 };
@@ -72,15 +67,22 @@ Bullet.prototype.advance = function (ctx) {
         return false;
     }
 
+    // update weapon in case we have a new one
+    if (this.type != player.weapon) {
+        this.type = player.weapon;
+        this.image.src = player.weapon.image;
+    }
+
     this.updateBoundingRects();
 
+    return true;
+};
+
+Bullet.prototype.render = function (ctx) {
     // for (var i = 0; i < this.boundingRects.length; ++i) {
     //     var b = this.boundingRects[i];
     //     ctx.fillRect(b.x, b.y, b.w, b.h);
     // }
 
-    this.elem.style.left = this.x;
-    this.elem.style.top = this.y;
-
-    return true;
+    ctx.drawImage(this.image, this.x, this.y, this.w, this.h);
 };

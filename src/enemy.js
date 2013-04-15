@@ -41,8 +41,11 @@ function Enemy() {
         { x: 0, y: 0, w: this.w*0.7, h: this.h*0.7, ox: this.w*0.15, oy: this.h*0.15 }
     ];
 
-    this.elem = window.document.createElement('div');
-    game.elem.appendChild(this.elem);
+    this.normalImage = new Image();
+    this.normalImage.src = "space_starter_kit/ufo.png";
+
+    this.explosionImage = new Image();
+    this.explosionImage.src = "space_starter_kit/ufo_explosion.png";
 
     return this;
 }
@@ -51,13 +54,9 @@ Enemy.prototype.reset = function () {
     this.x = Math.random() * game.w;
     this.y = -this.h;
     this.fire = false;
-    this.elem.className = "Enemy";
-    this.elem.style.left = this.x;
-    this.elem.style.top = this.y;
-    this.elem.style.width = this.w;
-    this.elem.style.height = this.h;
-    this.elem.style.visibility = "visible";
     this.destroyed = false;
+    this.exploding = false;
+    this.image = this.normalImage;
     this.energy = 40;
 };
 
@@ -121,19 +120,18 @@ Enemy.prototype.destroy = function () {
         return false;
     }
 
-    this.elem.className = "EnemyDestroyed";
     this.destroyed = true;
+    this.image = this.explosionImage;
 
     window.setTimeout(function () {
-        that.elem.style.visibility = "hidden";
         deallocateEnemy(that);
-        delete enemies[this.id];
+        delete enemies[that.id];
     }, this.dieDelay);
 
     return true;
 };
 
-Enemy.prototype.advance = function (ctx) {
+Enemy.prototype.advance = function () {
     if (this.destroyed) {
         return false;
     }
@@ -162,18 +160,19 @@ Enemy.prototype.advance = function (ctx) {
     }
 
     if (this.energy <= 10 && this.className !== "EnemyDamaged") {
-        this.elem.className = "EnemyDamaged";
+        // TODO
     }
 
     this.updateBoundingRects();
 
+    return true;
+};
+
+Enemy.prototype.render = function (ctx) {
     // for (var i = 0; i < this.boundingRects.length; ++i) {
     //     var b = this.boundingRects[i];
     //     ctx.fillRect(b.x, b.y, b.w, b.h);
     // }
 
-    this.elem.style.left = this.x;
-    this.elem.style.top = this.y;
-
-    return true;
+    ctx.drawImage(this.image, this.x, this.y, this.w, this.h);
 };

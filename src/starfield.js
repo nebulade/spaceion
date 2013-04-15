@@ -7,7 +7,7 @@ function Starfield (parent) {
     this.x = 0;
     this.y = 0;
 
-    this.stars = new Array(200);
+    this.stars = new Array(50);
 
     for (var i = 0; i < this.stars.length; i++) {
         this.stars[i] = new Array(5);
@@ -33,7 +33,20 @@ Starfield.prototype.initStar = function (star, initial) {
     star[5] = Math.floor(Math.random() * 4) + 2; // size
 };
 
-Starfield.prototype.advance = function (ctx) {
+Starfield.prototype.advance = function () {
+    for(var i = 0; i < this.stars.length; i++) {
+        var x = this.stars[i][0] / this.stars[i][2] + this.w / 2;
+        var y = this.stars[i][1] / this.stars[i][2] + this.h / 2;
+
+        if (this.stars[i][2] < 0 || x > this.w || x < 0 || y > (this.h - 5 - 20 - 5 ) || y < 0) {
+            this.initStar(this.stars[i], false);
+        } else {
+            this.stars[i][2] = this.stars[i][2] - this.stars[i][4] / 50;
+        }
+    }
+};
+
+Starfield.prototype.render = function (ctx) {
     for(var i = 0; i < this.stars.length; i++) {
         var x = this.stars[i][0] / this.stars[i][2] + this.w / 2;
         var y = this.stars[i][1] / this.stars[i][2] + this.h / 2;
@@ -45,13 +58,9 @@ Starfield.prototype.advance = function (ctx) {
         if (size < 2) size = 2;
         if (size > 3) size = 3;
 
-        if (this.stars[i][2] < 0 || x > this.w || x < 0 || y > (this.h - 5 - 20 - 5 ) || y < 0) {
-            this.initStar(this.stars[i], false);
-        } else {
+        if (!(this.stars[i][2] < 0 || x > this.w || x < 0 || y > (this.h - 5 - 20 - 5 ) || y < 0)) {
             ctx.fillStyle = "rgb(" + brightness + "," + brightness + "," + brightness + ")";
             ctx.fillRect(x, y, size, size);
-            this.stars[i][2] = this.stars[i][2] - this.stars[i][4] / 50;
         }
     }
 };
-

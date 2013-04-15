@@ -48,9 +48,8 @@ function Player() {
         { x: 0, y: 0, w: this.w*0.3, h: this.h*0.3, ox: this.w*0.6, oy: this.h*0.6 }
     ];
 
-    this.elem = window.document.createElement('div');
-    this.elem.className = "Player";
-    game.elem.appendChild(this.elem);
+    this.image = new Image();
+    this.image.src = "space_starter_kit/starship.png";
 
     return this;
 }
@@ -70,11 +69,6 @@ Player.prototype.setPos = function (x, y) {
 Player.prototype.reset = function () {
     this.y = game.h - this.h - 10;
     this.x = game.w/2 - this.w/2;
-    this.elem.style.left = this.x;
-    this.elem.style.top = this.y;
-    this.elem.style.width = this.w;
-    this.elem.style.height = this.h;
-    this.elem.style.opacity = 1;
     this.died = false;
     this.weapon = Weapons.Laser;
 };
@@ -86,7 +80,6 @@ Player.prototype.die = function () {
         return;
 
     this.died = true;
-    this.elem.style.opacity = 0;
     --this.lifes;
 
     if (this.lifes < 0) {
@@ -145,7 +138,7 @@ Player.prototype.shoot = function () {
     }, this.cooldownTime);
 };
 
-Player.prototype.advance = function (ctx) {
+Player.prototype.advance = function () {
     if (this.moveRight) {
         this.x += this.speed;
         this.x = (this.x + this.w) > game.w ? (game.w - this.w) : this.x;
@@ -169,17 +162,18 @@ Player.prototype.advance = function (ctx) {
         }
 
         if (this.cooldownTime > 100) {
-            this.cooldownTime = this.cooldownTime / 1.2;
+            this.cooldownTime = this.cooldownTime / 1.05;
         }
     }
 
     this.updateBoundingRects();
+};
 
+Player.prototype.render = function (ctx) {
     // for (var i = 0; i < this.boundingRects.length; ++i) {
     //     var b = this.boundingRects[i];
     //     ctx.fillRect(b.x, b.y, b.w, b.h);
     // }
 
-    this.elem.style.left = this.x;
-    this.elem.style.top = this.y;
+    ctx.drawImage(this.image, this.x, this.y, this.w, this.h);
 };
