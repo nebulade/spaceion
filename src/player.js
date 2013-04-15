@@ -7,24 +7,33 @@ var Weapons = {
     Laser: {
         name: "Laser",
         damage: 10,
-        image: "space_starter_kit/projectile1.png"
+        imageSource: "space_starter_kit/projectile1.png"
     },
     Phaser: {
         name: "Phaser",
         damage: 20,
-        image: "space_starter_kit/projectile2.png"
+        imageSource: "space_starter_kit/projectile2.png"
     },
     TripleLaser: {
         name: "Laser",
         damage: 10,
-        image: "space_starter_kit/projectile1.png"
+        imageSource: "space_starter_kit/projectile1.png"
     },
     TriplePhaser: {
         name: "Phaser",
         damage: 20,
-        image: "space_starter_kit/projectile2.png"
+        imageSource: "space_starter_kit/projectile2.png"
     }
 };
+
+function initWeapons() {
+    for (var i in Weapons) {
+        if (Weapons.hasOwnProperty(i)) {
+            Weapons[i].image = new Image();
+            Weapons[i].image.src = Weapons[i].imageSource;
+        }
+    }
+}
 
 function Player() {
     this.x = 0;
@@ -39,7 +48,7 @@ function Player() {
     this.cooldownTime = 400;
     this.lifes = 5;
     this.score = 0;
-    this.died = false;
+    this.destroyed = false;
     this.level = 1;
     this.weapon = Weapons.Laser;
     this.boundingRects = [
@@ -48,8 +57,13 @@ function Player() {
         { x: 0, y: 0, w: this.w*0.3, h: this.h*0.3, ox: this.w*0.6, oy: this.h*0.6 }
     ];
 
-    this.image = new Image();
-    this.image.src = "space_starter_kit/starship.png";
+    this.normalImage = new Image();
+    this.normalImage.src = "space_starter_kit/starship.png";
+
+    this.explosionImage = new Image();
+    this.explosionImage.src = "space_starter_kit/ufo_explosion.png";
+
+    this.image = this.normalImage;
 
     return this;
 }
@@ -69,23 +83,26 @@ Player.prototype.setPos = function (x, y) {
 Player.prototype.reset = function () {
     this.y = game.h - this.h - 10;
     this.x = game.w/2 - this.w/2;
-    this.died = false;
+    this.destroyed = false;
     this.weapon = Weapons.Laser;
+    this.image = this.normalImage;
 };
 
 Player.prototype.die = function () {
     var that = this;
 
-    if (this.died)
+    if (this.destroyed)
         return;
 
-    this.died = true;
+    this.destroyed = true;
     --this.lifes;
 
     if (this.lifes < 0) {
         this.score = 0;
         this.lifes = 5;
     }
+
+    this.image = this.explosionImage;
 
     window.setTimeout(function () {
         that.reset();

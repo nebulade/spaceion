@@ -152,19 +152,29 @@ function handleKeyUpEvents(event) {
 }
 
 function handleTouchStartEvents(event) {
-    player.fire = true;
+    if (!player.destroyed) {
+        player.fire = true;
+    }
+
     event.preventDefault();
 }
 
 function handleTouchMoveEvents(event) {
     var x = (event.pageX || event.targetTouches[0].pageX) - game.x;
     var y = (event.pageY || event.targetTouches[0].pageY) - game.y;
-    player.setPos(x - player.w/2, y - playerTouchOffset);
+
+    if (!player.destroyed) {
+        player.setPos(x - player.w/2, y - playerTouchOffset);
+    }
+
     event.preventDefault();
 }
 
 function handleTouchEndEvents(event) {
-    player.fire = false;
+    if (!player.destroyed) {
+        player.fire = false;
+    }
+
     event.preventDefault();
 }
 
@@ -189,6 +199,7 @@ function initGame() {
         document.body.addEventListener("touchend", handleTouchEndEvents, false);
     }
 
+    initWeapons();
     player.reset();
     game.render();
     spawnEnemy();

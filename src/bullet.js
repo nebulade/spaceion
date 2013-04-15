@@ -33,9 +33,8 @@ function Bullet () {
         { x: 0, y: 0, w: this.w*0.5, h: this.h*0.8, ox: this.w*0.25, oy: this.h*0.1 }
     ];
 
-    this.type = player.weapon;
-    this.image = new Image();
-    this.image.src = player.weapon.image;
+    this.weapon = player.weapon;
+    this.image = player.weapon.image;
 
     return this;
 }
@@ -51,6 +50,7 @@ Bullet.prototype.reset = function () {
     this.x = player.x + (player.w/2 - this.w/2);
     this.y = player.y;
     this.weapon = player.weapon;
+    this.image = this.weapon.image;
 };
 
 Bullet.prototype.destroy = function () {
@@ -65,12 +65,6 @@ Bullet.prototype.advance = function (ctx) {
     if (this.y < 0) {
         this.destroy();
         return false;
-    }
-
-    // update weapon in case we have a new one
-    if (this.type != player.weapon) {
-        this.type = player.weapon;
-        this.image.src = player.weapon.image;
     }
 
     this.updateBoundingRects();
