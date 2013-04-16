@@ -18,7 +18,7 @@ var starfield;
 var bullets = bullets || {};
 var enemies = enemies || {};
 
-var playerTouchOffset = 100;
+var playerTouchOffset = 150;
 
 function Game() {
     this.w = window.innerWidth < 500 ? window.innerWidth : 500;
@@ -169,6 +169,8 @@ function handleTouchMoveEvents(event) {
     var y = (event.pageY || event.targetTouches[0].pageY) - game.y;
 
     if (!player.destroyed) {
+
+
         player.setPos(x - player.w/2, y - playerTouchOffset);
     }
 

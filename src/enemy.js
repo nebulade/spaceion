@@ -29,17 +29,13 @@ function spawnEnemy() {
 }
 
 function Enemy() {
-    this.id = Math.random();
-    this.x = 0;
-    this.y = 0;
+    this.constructor();
     this.w = 50;
     this.h = 50;
-    this.direction = "";
     this.horizontal_speed = 1;
     this.vertical_speed = 1;
     this.horizontal_speed_max = 4;
     this.horizontal_acceleration = 0.1;
-    this.dieDelay = 400;
     this.boundingRects = [
         { x: 0, y: 0, w: this.w*0.7, h: this.h*0.7, ox: this.w*0.15, oy: this.h*0.15 }
     ];
@@ -55,6 +51,8 @@ function Enemy() {
 
     return this;
 }
+
+Enemy.prototype = new Element();
 
 Enemy.prototype.reset = function () {
     this.x = Math.random() * game.w;
@@ -180,18 +178,4 @@ Enemy.prototype.advance = function () {
     this.updateBoundingRects();
 
     return true;
-};
-
-Enemy.prototype.render = function (ctx) {
-    if (!this.destroyed) {
-        this.x += this.horizontal_speed;
-        this.y += this.vertical_speed;
-    }
-
-    // for (var i = 0; i < this.boundingRects.length; ++i) {
-    //     var b = this.boundingRects[i];
-    //     ctx.fillRect(b.x, b.y, b.w, b.h);
-    // }
-
-    ctx.drawImage(this.image, this.x, this.y, this.w, this.h);
 };
