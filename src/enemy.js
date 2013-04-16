@@ -35,7 +35,7 @@ function Enemy() {
     this.horizontal_speed = 1;
     this.vertical_speed = 1;
     this.horizontal_speed_max = 4;
-    this.horizontal_acceleration = 0.1;
+    this.horizontal_acceleration = 0.05;
     this.boundingRects = [
         { x: 0, y: 0, w: this.w*0.7, h: this.h*0.7, ox: this.w*0.15, oy: this.h*0.15 }
     ];
@@ -62,7 +62,7 @@ Enemy.prototype.reset = function () {
     this.image = this.normalImage;
     this.energy = 40;
     this.horizontal_speed = (player.score + 1) / 10;
-    this.vertical_speed = (player.score + 1) / 10;
+    this.vertical_speed = (player.score + 5) / 10;
 };
 
 Enemy.prototype.updateBoundingRects = function () {

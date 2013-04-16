@@ -87,7 +87,7 @@ function render() {
 function gameloop() {
     var i, j;
 
-    window.setTimeout(gameloop, 33);
+    window.setTimeout(gameloop, 66);
 
     starfield.advance();
 
