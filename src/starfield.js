@@ -58,9 +58,7 @@ Starfield.prototype.render = function (ctx) {
         if (size < 2) size = 2;
         if (size > 3) size = 3;
 
-        if (!(this.stars[i][2] < 0 || x > this.w || x < 0 || y > (this.h - 5 - 20 - 5 ) || y < 0)) {
-            ctx.fillStyle = "rgb(" + brightness + "," + brightness + "," + brightness + ")";
-            ctx.fillRect(x, y, size, size);
-        }
+        ctx.fillStyle = "rgb(" + brightness + "," + brightness + "," + brightness + ")";
+        ctx.fillRect(x, y, size, size);
     }
 };

@@ -128,10 +128,6 @@ Player.prototype.shoot = function () {
             return;
         }
 
-        b1.reset();
-        b2.reset();
-        b3.reset();
-
         b2.x -= 20;
         b2.y += 20;
         b3.x += 20;
@@ -145,7 +141,6 @@ Player.prototype.shoot = function () {
         if (!b1) {
             return;
         }
-        b1.reset();
         bullets[b1.id] = b1;
     }
 

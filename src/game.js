@@ -71,17 +71,15 @@ function render() {
     starfield.render(game.ctx);
     player.render(game.ctx);
 
-    for (i in bullets) {
-        if (bullets.hasOwnProperty(i)) {
-            bullets[i].advance(false);
-            bullets[i].render(game.ctx);
+    for (i in enemies) {
+        if (enemies.hasOwnProperty(i)) {
+            enemies[i].render(game.ctx);
         }
     }
 
-    for (i in enemies) {
-        if (enemies.hasOwnProperty(i)) {
-            enemies[i].advance(false);
-            enemies[i].render(game.ctx);
+    for (i in bullets) {
+        if (bullets.hasOwnProperty(i)) {
+            bullets[i].render(game.ctx);
         }
     }
 }
@@ -94,36 +92,41 @@ function gameloop() {
     starfield.advance();
 
     if (!player.died)
-        player.advance(true);
+        player.advance();
 
     for (i in bullets) {
         if (bullets.hasOwnProperty(i)) {
-            bullets[i].advance(true);
+            bullets[i].advance();
         }
     }
 
     for (i in enemies) {
         if (enemies.hasOwnProperty(i)) {
             var e = enemies[i];
-            if (e.advance(true)) {
-                // collide with player
-                if (!player.died && e.collides(player)) {
-                    player.die();
-                    e.destroy();
-                    continue;
-                }
 
-                // collide with bullets
-                for (j in bullets) {
-                    if (bullets.hasOwnProperty(j)) {
-                        if (e.collides(bullets[j])) {
-                            // only increase score if enemy is down
-                            if (e.hit(bullets[j].weapon.damage)) {
-                                ++player.score;
-                            }
-                            bullets[j].destroy();
-                            break;
+            if (e.destroyed) {
+                continue;
+            }
+
+            e.advance();
+
+            // collide with player
+            if (!player.destroyed && e.collides(player)) {
+                player.die();
+                e.destroy();
+                continue;
+            }
+
+            // collide with bullets
+            for (j in bullets) {
+                if (bullets.hasOwnProperty(j)) {
+                    if (!bullets[j].destroyed && e.collides(bullets[j])) {
+                        // only increase score if enemy is down
+                        if (e.hit(bullets[j].weapon.damage)) {
+                            ++player.score;
                         }
+                        bullets[j].destroy();
+                        break;
                     }
                 }
             }

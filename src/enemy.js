@@ -35,7 +35,10 @@ function Enemy() {
     this.w = 50;
     this.h = 50;
     this.direction = "";
-    this.speed = 1;
+    this.horizontal_speed = 1;
+    this.vertical_speed = 1;
+    this.horizontal_speed_max = 4;
+    this.horizontal_acceleration = 0.1;
     this.dieDelay = 400;
     this.boundingRects = [
         { x: 0, y: 0, w: this.w*0.7, h: this.h*0.7, ox: this.w*0.15, oy: this.h*0.15 }
@@ -56,12 +59,12 @@ function Enemy() {
 Enemy.prototype.reset = function () {
     this.x = Math.random() * game.w;
     this.y = -this.h;
-    this.fire = false;
     this.destroyed = false;
     this.exploding = false;
     this.image = this.normalImage;
     this.energy = 40;
-    this.speed = (player.score + 1) / 10;
+    this.horizontal_speed = (player.score + 1) / 10;
+    this.vertical_speed = (player.score + 1) / 10;
 };
 
 Enemy.prototype.updateBoundingRects = function () {
@@ -135,46 +138,56 @@ Enemy.prototype.destroy = function () {
     return true;
 };
 
-Enemy.prototype.advance = function (full) {
+Enemy.prototype.advance = function () {
     if (this.destroyed) {
         return false;
     }
 
+    if (this.y > game.h) {
+        this.destroy();
+        return false;
+    }
+
     if (this.direction === 'right') {
-        this.x += this.speed;
-        this.x = (this.x + this.w) > game.w ? (game.w - this.w) : this.x;
+        if (this.horizontal_speed < this.horizontal_speed_max)
+            this.horizontal_speed += this.horizontal_acceleration;
     } else if (this.direction === 'left') {
-        this.x -= this.speed;
-        this.x = this.x < 0 ? 0 : this.x;
+        if (this.horizontal_speed > -this.horizontal_speed_max)
+            this.horizontal_speed -= this.horizontal_acceleration;
     }
 
-    this.y += this.speed;
-
-    if (full) {
-        if (Math.random() < 0.02) {
-            if (this.direction === 'left') {
-                this.direction = 'right';
-            } else {
-                this.direction = 'left';
-            }
-        }
-
-        if (this.y > game.h) {
-            this.destroy();
-            return false;
-        }
-
-        if (this.energy <= 10 && this.image !== this.damagedImage) {
-            this.image = this.damagedImage;
-        }
-
-        this.updateBoundingRects();
+    if ((this.x + this.w) > game.w) {
+        this.x = (game.w - this.w);
+        this.horizontal_speed = 0;
+    } else if (this.x < 0) {
+        this.x = 0;
+        this.horizontal_speed = 0;
     }
+
+    if (Math.random() < 0.02) {
+        if (this.direction === 'left') {
+            this.direction = 'right';
+        } else {
+            this.direction = 'left';
+        }
+    }
+
+
+    if (this.energy <= 10 && this.image !== this.damagedImage) {
+        this.image = this.damagedImage;
+    }
+
+    this.updateBoundingRects();
 
     return true;
 };
 
 Enemy.prototype.render = function (ctx) {
+    if (!this.destroyed) {
+        this.x += this.horizontal_speed;
+        this.y += this.vertical_speed;
+    }
+
     // for (var i = 0; i < this.boundingRects.length; ++i) {
     //     var b = this.boundingRects[i];
     //     ctx.fillRect(b.x, b.y, b.w, b.h);
