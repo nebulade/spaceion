@@ -35,7 +35,7 @@ function Enemy() {
     this.w = 50;
     this.h = 50;
     this.direction = "";
-    this.speed = 2;
+    this.speed = 1;
     this.dieDelay = 400;
     this.boundingRects = [
         { x: 0, y: 0, w: this.w*0.7, h: this.h*0.7, ox: this.w*0.15, oy: this.h*0.15 }
@@ -43,6 +43,9 @@ function Enemy() {
 
     this.normalImage = new Image();
     this.normalImage.src = "space_starter_kit/ufo.png";
+
+    this.damagedImage = new Image();
+    this.damagedImage.src = "space_starter_kit/ufodark.png";
 
     this.explosionImage = new Image();
     this.explosionImage.src = "space_starter_kit/ufo_explosion.png";
@@ -58,6 +61,7 @@ Enemy.prototype.reset = function () {
     this.exploding = false;
     this.image = this.normalImage;
     this.energy = 40;
+    this.speed = (player.score + 1) / 10;
 };
 
 Enemy.prototype.updateBoundingRects = function () {
@@ -131,17 +135,9 @@ Enemy.prototype.destroy = function () {
     return true;
 };
 
-Enemy.prototype.advance = function () {
+Enemy.prototype.advance = function (full) {
     if (this.destroyed) {
         return false;
-    }
-
-    if (Math.random() < 0.01) {
-        if (this.direction === 'left') {
-            this.direction = 'right';
-        } else {
-            this.direction = 'left';
-        }
     }
 
     if (this.direction === 'right') {
@@ -154,16 +150,26 @@ Enemy.prototype.advance = function () {
 
     this.y += this.speed;
 
-    if (this.y > game.h) {
-        this.destroy();
-        return false;
-    }
+    if (full) {
+        if (Math.random() < 0.02) {
+            if (this.direction === 'left') {
+                this.direction = 'right';
+            } else {
+                this.direction = 'left';
+            }
+        }
 
-    if (this.energy <= 10 && this.className !== "EnemyDamaged") {
-        // TODO
-    }
+        if (this.y > game.h) {
+            this.destroy();
+            return false;
+        }
 
-    this.updateBoundingRects();
+        if (this.energy <= 10 && this.image !== this.damagedImage) {
+            this.image = this.damagedImage;
+        }
+
+        this.updateBoundingRects();
+    }
 
     return true;
 };

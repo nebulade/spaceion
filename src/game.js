@@ -73,12 +73,14 @@ function render() {
 
     for (i in bullets) {
         if (bullets.hasOwnProperty(i)) {
+            bullets[i].advance(false);
             bullets[i].render(game.ctx);
         }
     }
 
     for (i in enemies) {
         if (enemies.hasOwnProperty(i)) {
+            enemies[i].advance(false);
             enemies[i].render(game.ctx);
         }
     }
@@ -92,18 +94,18 @@ function gameloop() {
     starfield.advance();
 
     if (!player.died)
-        player.advance(game.ctx);
+        player.advance(true);
 
     for (i in bullets) {
         if (bullets.hasOwnProperty(i)) {
-            bullets[i].advance(game.ctx);
+            bullets[i].advance(true);
         }
     }
 
     for (i in enemies) {
         if (enemies.hasOwnProperty(i)) {
             var e = enemies[i];
-            if (e.advance(game.ctx)) {
+            if (e.advance(true)) {
                 // collide with player
                 if (!player.died && e.collides(player)) {
                     player.die();

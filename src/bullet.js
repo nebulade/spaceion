@@ -59,15 +59,17 @@ Bullet.prototype.destroy = function () {
     delete bullets[this.id];
 };
 
-Bullet.prototype.advance = function (ctx) {
+Bullet.prototype.advance = function (full) {
     this.y += this.speed;
 
-    if (this.y < 0) {
-        this.destroy();
-        return false;
-    }
+    if (full) {
+        if (this.y < 0) {
+            this.destroy();
+            return false;
+        }
 
-    this.updateBoundingRects();
+        this.updateBoundingRects();
+    }
 
     return true;
 };

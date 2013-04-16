@@ -156,14 +156,6 @@ Player.prototype.shoot = function () {
 };
 
 Player.prototype.advance = function () {
-    if (this.moveRight) {
-        this.x += this.speed;
-        this.x = (this.x + this.w) > game.w ? (game.w - this.w) : this.x;
-    } else if (this.moveLeft) {
-        this.x -= this.speed;
-        this.x = this.x < 0 ? 0 : this.x;
-    }
-
     if (this.fire) {
         this.shoot();
     }
@@ -187,6 +179,16 @@ Player.prototype.advance = function () {
 };
 
 Player.prototype.render = function (ctx) {
+    if (!this.destroyed) {
+        if (this.moveRight) {
+            this.x += this.speed;
+            this.x = (this.x + this.w) > game.w ? (game.w - this.w) : this.x;
+        } else if (this.moveLeft) {
+            this.x -= this.speed;
+            this.x = this.x < 0 ? 0 : this.x;
+        }
+    }
+
     // for (var i = 0; i < this.boundingRects.length; ++i) {
     //     var b = this.boundingRects[i];
     //     ctx.fillRect(b.x, b.y, b.w, b.h);
