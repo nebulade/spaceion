@@ -155,7 +155,7 @@ Player.prototype.advance = function () {
         this.shoot();
     }
 
-    if (this.score > this.level) {
+    if (this.score > (this.level * 2)) {
         ++this.level;
         if (this.level > 9) {
             this.weapon = Weapons.TriplePhaser;
