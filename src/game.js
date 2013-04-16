@@ -1,17 +1,5 @@
 "use strict";
 
-// animation frame shim
-window.requestAnimFrame = (function () {
-    return window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        function (callback) {
-            window.setTimeout(callback, 1000 / 60);
-        };
-}());
-
 var player;
 var game;
 var starfield;
@@ -63,7 +51,7 @@ Game.prototype.updateStats = function () {
 function render() {
     var i;
 
-    window.requestAnimFrame(render);
+    window.setTimeout(render, 1000 / 60);
 
     // clear canvas
     game.ctx.clearRect(0, 0, game.w, game.h);
