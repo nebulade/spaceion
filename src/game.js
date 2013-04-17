@@ -48,10 +48,19 @@ Game.prototype.updateStats = function () {
     this.statsElement.innerHTML = "Lifes " + player.lifes + "  |  Score " + player.score;
 };
 
+var renderFps = {};
+renderFps.d = Date.now();
+renderFps.l = 0;
 function render() {
     var i;
 
-    window.setTimeout(render, 1000 / 60);
+    if ((Date.now() - renderFps.d) >= 2000) {
+        console.log("RenderFPS: " + renderFps.l / 2.0);
+        renderFps.d = Date.now();
+        renderFps.l = 0;
+    } else {
+        ++(renderFps.l);
+    }
 
     // clear canvas
     game.ctx.clearRect(0, 0, game.w, game.h);
@@ -72,10 +81,20 @@ function render() {
     }
 }
 
+var gameLoops = {};
+gameLoops.d = Date.now();
+gameLoops.l = 0;
+
 function gameloop() {
     var i, j;
 
-    window.setTimeout(gameloop, 66);
+    if ((Date.now() - gameLoops.d) >= 2000) {
+        console.log("Game loops: " + gameLoops.l / 2.0);
+        gameLoops.d = Date.now();
+        gameLoops.l = 0;
+    } else {
+        ++(gameLoops.l);
+    }
 
     starfield.advance();
 
@@ -199,7 +218,6 @@ function initGame() {
     game.render();
     spawnEnemy();
 
-    gameloop();
-    render();
+    window.setInterval(gameloop, 1000 / 30);
+    window.setInterval(render, 1000 / 60);
 }
-
