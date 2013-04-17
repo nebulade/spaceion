@@ -7,21 +7,13 @@ var Weapons = {
     Laser: {
         name: "Laser",
         damage: 10,
+        guns: 1,
         imageSource: "space_starter_kit/projectile1.png"
     },
     Phaser: {
         name: "Phaser",
         damage: 20,
-        imageSource: "space_starter_kit/projectile2.png"
-    },
-    TripleLaser: {
-        name: "Laser",
-        damage: 10,
-        imageSource: "space_starter_kit/projectile1.png"
-    },
-    TriplePhaser: {
-        name: "Phaser",
-        damage: 20,
+        guns: 1,
         imageSource: "space_starter_kit/projectile2.png"
     }
 };
@@ -83,6 +75,7 @@ Player.prototype.reset = function () {
     this.x = game.w/2 - this.w/2;
     this.destroyed = false;
     this.weapon = Weapons.Laser;
+    this.weapon.guns = 1;
     this.image = this.normalImage;
 };
 
@@ -109,37 +102,23 @@ Player.prototype.die = function () {
 
 Player.prototype.shoot = function () {
     var that = this;
-    var b1, b2, b3;
 
     if (this.cooldown) {
         return;
     }
 
-    if (this.weapon === Weapons.TripleLaser || this.weapon === Weapons.TriplePhaser) {
-        b1 = allocateBullet();
-        b2 = allocateBullet();
-        b3 = allocateBullet();
-        if (!b1 || !b2 || !b3) {
-            b1 && deallocateBullet(b1);
-            b2 && deallocateBullet(b2);
-            b3 && deallocateBullet(b3);
-            return;
+    for (var i = 0; i < this.weapon.guns; ++i) {
+        var b = allocateBullet();
+        if (!b) {
+            break;
         }
 
-        b2.x -= 20;
-        b2.y += 20;
-        b3.x += 20;
-        b3.y += 20;
+        var j = i - (this.weapon.guns-1)/2;
 
-        bullets[b1.id] = b1;
-        bullets[b2.id] = b2;
-        bullets[b3.id] = b3;
-    } else {
-        b1 = allocateBullet();
-        if (!b1) {
-            return;
-        }
-        bullets[b1.id] = b1;
+        b.x += j * 10;
+        b.y += Math.abs(j) * 10;
+
+        bullets[b.id] = b;
     }
 
     this.cooldown = true;
@@ -153,14 +132,16 @@ Player.prototype.advance = function () {
         this.shoot();
     }
 
-    if (this.score > (this.level * 2)) {
+    if (this.score >= (this.level * 2)) {
         ++this.level;
-        if (this.level > 9) {
-            this.weapon = Weapons.TriplePhaser;
-        } else if (this.level > 6) {
-            this.weapon = Weapons.TripleLaser;
-        } else if (this.level > 3) {
+
+        if (this.weapon.guns < 5) {
+            ++this.weapon.guns;
+        }
+
+        if (this.level >= 5 && this.weapon !== Weapons.Phaser) {
             this.weapon = Weapons.Phaser;
+            this.weapon.guns = 1;
         }
 
         if (this.cooldownTime > 100) {

@@ -23,16 +23,9 @@ function Bullet () {
     this.constructor();
 
     // deviate from default
-    this.w = 20;
-    this.h = 40;
-    this.vertical_speed = -15;
-    this.horizontal_speed = 0;
     this.boundingRects = [
         { x: 0, y: 0, w: this.w*0.5, h: this.h*0.8, ox: this.w*0.25, oy: this.h*0.1 }
     ];
-
-    this.weapon = player.weapon;
-    this.image = player.weapon.image;
 
     this.explosionImage = new Image();
     this.explosionImage.src = "space_starter_kit/ufo_explosion.png";
@@ -50,6 +43,8 @@ Bullet.prototype.reset = function () {
     this.weapon = player.weapon;
     this.image = this.weapon.image;
     this.destroyed = false;
+    this.vertical_speed = -15;
+    this.horizontal_speed = 0;
 };
 
 Bullet.prototype.destroy = function () {
