@@ -70,9 +70,13 @@ Player.prototype.setPos = function (x, y) {
     this.x = x;
 };
 
-Player.prototype.reset = function () {
+Player.prototype.resetPos = function () {
     this.y = game.h - this.h - 10;
     this.x = game.w/2 - this.w/2;
+};
+
+Player.prototype.reset = function () {
+    this.resetPos();
     this.destroyed = false;
     this.weapon = Weapons.Laser;
     this.weapon.guns = 1;
