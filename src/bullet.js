@@ -20,13 +20,13 @@ function deallocateBullet(bullet) {
 }
 
 function Bullet () {
-    this.id = Math.random();
+    this.constructor();
+
+    // deviate from default
     this.w = 20;
     this.h = 40;
-    this.x = 0;
-    this.y = 0;
-    this.destroyed = false;
-    this.speed = -15;
+    this.vertical_speed = -15;
+    this.horizontal_speed = 0;
     this.boundingRects = [
         { x: 0, y: 0, w: this.w*0.5, h: this.h*0.8, ox: this.w*0.25, oy: this.h*0.1 }
     ];
@@ -40,14 +40,11 @@ function Bullet () {
     return this;
 }
 
-Bullet.prototype.updateBoundingRects = function () {
-    for (var i = 0; i < this.boundingRects.length; ++i) {
-        this.boundingRects[i].x = this.boundingRects[i].ox + this.x;
-        this.boundingRects[i].y = this.boundingRects[i].oy + this.y;
-    }
-};
+Bullet.prototype = new Element();
 
 Bullet.prototype.reset = function () {
+    this.w = 20;
+    this.h = 40;
     this.x = player.x + (player.w/2 - this.w/2);
     this.y = player.y;
     this.weapon = player.weapon;
@@ -63,6 +60,10 @@ Bullet.prototype.destroy = function () {
     }
 
     this.destroyed = true;
+
+    // set new values for destroyed image
+    this.w = 24;
+    this.h = 24;
     this.image = this.explosionImage;
 
     window.setTimeout (function () {
@@ -80,21 +81,4 @@ Bullet.prototype.advance = function (full) {
     this.updateBoundingRects();
 
     return;
-};
-
-Bullet.prototype.render = function (ctx) {
-    if (!this.destroyed) {
-        this.y += this.speed;
-    }
-
-    // for (var i = 0; i < this.boundingRects.length; ++i) {
-    //     var b = this.boundingRects[i];
-    //     ctx.fillRect(b.x, b.y, b.w, b.h);
-    // }
-
-    if (this.destroyed) {
-        ctx.drawImage(this.image, this.x, this.y, 24, 24);
-    } else {
-        ctx.drawImage(this.image, this.x, this.y, this.w, this.h);
-    }
 };

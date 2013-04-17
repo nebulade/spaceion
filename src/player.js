@@ -36,14 +36,16 @@ function initWeapons() {
 }
 
 function Player() {
-    this.x = 0;
-    this.y = 0;
+    this.constructor();
+
     this.w = 96/1.5;
     this.h = 96/1.5;
     this.fire = false;
     this.moveRight = false;
     this.moveLeft = false;
-    this.speed = 10;
+    this.horizontal_acceleration = 1;
+    this.horizontal_deceleration = 1.5;
+    this.horizontal_speed_max = 10;
     this.cooldown = false;
     this.cooldownTime = 400;
     this.lifes = 5;
@@ -51,6 +53,7 @@ function Player() {
     this.destroyed = false;
     this.level = 1;
     this.weapon = Weapons.Laser;
+    this.vertical_speed = 0;
     this.boundingRects = [
         { x: 0, y: 0, w: this.w*0.3, h: this.h*0.3, ox: this.w*0.1, oy: this.h*0.6 },
         { x: 0, y: 0, w: this.w*0.2, h: this.h*0.8, ox: this.w*0.4, oy: this.h*0.1 },
@@ -68,12 +71,7 @@ function Player() {
     return this;
 }
 
-Player.prototype.updateBoundingRects = function () {
-    for (var i = 0; i < this.boundingRects.length; ++i) {
-        this.boundingRects[i].x = this.boundingRects[i].ox + this.x;
-        this.boundingRects[i].y = this.boundingRects[i].oy + this.y;
-    }
-};
+Player.prototype = new Element();
 
 Player.prototype.setPos = function (x, y) {
     this.y = y;
@@ -170,24 +168,40 @@ Player.prototype.advance = function () {
         }
     }
 
-    this.updateBoundingRects();
-};
-
-Player.prototype.render = function (ctx) {
-    if (!this.destroyed) {
-        if (this.moveRight) {
-            this.x += this.speed;
-            this.x = (this.x + this.w) > game.w ? (game.w - this.w) : this.x;
-        } else if (this.moveLeft) {
-            this.x -= this.speed;
-            this.x = this.x < 0 ? 0 : this.x;
-        }
+    // adjust the direction we move
+    if (this.moveRight) {
+        this.direction = 1;
+    } else if (this.moveLeft) {
+        this.direction = -1;
+    } else {
+        this.direction = 0;
     }
 
-    // for (var i = 0; i < this.boundingRects.length; ++i) {
-    //     var b = this.boundingRects[i];
-    //     ctx.fillRect(b.x, b.y, b.w, b.h);
-    // }
+    // adjust the speeds according to the direction we move
+    if (this.direction === 1) {
+        if (this.horizontal_speed < this.horizontal_speed_max)
+            this.horizontal_speed += this.horizontal_acceleration;
+    } else if (this.direction === -1) {
+        if (this.horizontal_speed > -this.horizontal_speed_max)
+            this.horizontal_speed -= this.horizontal_acceleration;
+    } else {
+        if (this.horizontal_speed > 0)
+            this.horizontal_speed -= this.horizontal_deceleration;
+        else if (this.horizontal_speed < 0)
+            this.horizontal_speed += this.horizontal_deceleration;
 
-    ctx.drawImage(this.image, this.x, this.y, this.w, this.h);
+        // avoid jumping around 0
+        if (Math.abs(this.horizontal_speed) < this.horizontal_deceleration)
+            this.horizontal_speed = 0;
+    }
+
+    if ((this.x + this.w) > game.w) {
+        this.x = (game.w - this.w);
+        this.horizontal_speed = 0;
+    } else if (this.x < 0) {
+        this.x = 0;
+        this.horizontal_speed = 0;
+    }
+
+    this.updateBoundingRects();
 };

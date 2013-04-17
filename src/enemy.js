@@ -30,11 +30,10 @@ function spawnEnemy() {
 
 function Enemy() {
     this.constructor();
+
+    // deviate from the default
     this.w = 50;
     this.h = 50;
-    this.horizontal_speed = 1;
-    this.vertical_speed = 1;
-    this.horizontal_speed_max = 4;
     this.horizontal_acceleration = 0.05;
     this.boundingRects = [
         { x: 0, y: 0, w: this.w*0.7, h: this.h*0.7, ox: this.w*0.15, oy: this.h*0.15 }
@@ -48,6 +47,8 @@ function Enemy() {
 
     this.explosionImage = new Image();
     this.explosionImage.src = "space_starter_kit/ufo_explosion.png";
+
+    this.image = this.normalImage;
 
     return this;
 }
@@ -63,59 +64,6 @@ Enemy.prototype.reset = function () {
     this.energy = 40;
     this.horizontal_speed = (player.score + 1) / 10;
     this.vertical_speed = (player.score + 5) / 10;
-};
-
-Enemy.prototype.updateBoundingRects = function () {
-    for (var i = 0; i < this.boundingRects.length; ++i) {
-        this.boundingRects[i].x = this.boundingRects[i].ox + this.x;
-        this.boundingRects[i].y = this.boundingRects[i].oy + this.y;
-    }
-};
-
-Enemy.prototype.collideMany = function (rects) {
-    for (var i = 0; i < rects.length; ++i) {
-        for (var j = 0; j < this.boundingRects.length; ++j) {
-            if (this.collide(this.boundingRects[j], rects[i])) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-};
-
-Enemy.prototype.collide = function (a, b) {
-    var horizontal = false;
-    var vertical = false;
-
-    if ((((b.x >= a.x) && (b.x <= (a.x+a.w))) || (((b.x+b.w) >= a.x) && (b.x+b.w) <= (a.x+a.w)))) {
-        horizontal = true;
-    }
-
-    if ((((b.y >= a.y) && (b.y <= (a.y+a.h))) || (((b.y+b.h) >= a.y) && (b.y+b.h) <= (a.y+a.h)))) {
-        vertical = true;
-    }
-
-    if (horizontal && vertical) {
-        return true;
-    } else {
-        return false;
-    }
-};
-
-Enemy.prototype.collides = function (object) {
-    return this.collideMany(object.boundingRects);
-};
-
-Enemy.prototype.hit = function (damage) {
-    this.energy -= damage;
-
-    if (this.energy <= 0) {
-        this.destroy();
-        return true;
-    }
-
-    return false;
 };
 
 Enemy.prototype.destroy = function () {
@@ -136,20 +84,30 @@ Enemy.prototype.destroy = function () {
     return true;
 };
 
+Enemy.prototype.strategy = function () {
+    if (Math.random() < 0.02) {
+        if (this.direction === -1) {
+            this.direction = 1;
+        } else {
+            this.direction = -1;
+        }
+    }
+};
+
 Enemy.prototype.advance = function () {
     if (this.destroyed) {
-        return false;
+        return;
     }
 
     if (this.y > game.h) {
         this.destroy();
-        return false;
+        return;
     }
 
-    if (this.direction === 'right') {
+    if (this.direction === 1) {
         if (this.horizontal_speed < this.horizontal_speed_max)
             this.horizontal_speed += this.horizontal_acceleration;
-    } else if (this.direction === 'left') {
+    } else if (this.direction === -1) {
         if (this.horizontal_speed > -this.horizontal_speed_max)
             this.horizontal_speed -= this.horizontal_acceleration;
     }
@@ -162,20 +120,10 @@ Enemy.prototype.advance = function () {
         this.horizontal_speed = 0;
     }
 
-    if (Math.random() < 0.02) {
-        if (this.direction === 'left') {
-            this.direction = 'right';
-        } else {
-            this.direction = 'left';
-        }
-    }
-
-
     if (this.energy <= 10 && this.image !== this.damagedImage) {
         this.image = this.damagedImage;
     }
 
+    this.strategy();
     this.updateBoundingRects();
-
-    return true;
 };
