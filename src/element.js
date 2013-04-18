@@ -85,15 +85,9 @@ Element.prototype.hit = function (damage) {
 };
 
 Element.prototype.destroy = function () {
-    var that = this;
-
-    if (this.destroyed) {
-        return false;
+    if (!this.destroyed) {
+        this.destroyed = true;
     }
-
-    this.destroyed = true;
-
-    return true;
 };
 
 Element.prototype.advance = function () {

@@ -45,6 +45,7 @@ function Player() {
     this.destroyed = false;
     this.level = 1;
     this.weapon = Weapons.Laser;
+    this.dieDelay = 1000;
     this.vertical_speed = 0;
     this.boundingRects = [
         { x: 0, y: 0, w: this.w*0.3, h: this.h*0.3, ox: this.w*0.1, oy: this.h*0.6 },
@@ -83,11 +84,12 @@ Player.prototype.reset = function () {
     this.image = this.normalImage;
 };
 
-Player.prototype.die = function () {
+Player.prototype.destroy = function () {
     var that = this;
 
-    if (this.destroyed)
+    if (this.destroyed) {
         return;
+    }
 
     this.destroyed = true;
     --this.lifes;
@@ -102,7 +104,7 @@ Player.prototype.die = function () {
     window.setTimeout(function () {
         that.clear();
         that.reset();
-    }, 1000);
+    }, this.dieDelay);
 };
 
 Player.prototype.shoot = function () {

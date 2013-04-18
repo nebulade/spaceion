@@ -113,7 +113,7 @@ function gameloop() {
 
             // collide with player
             if (!player.destroyed && e.collides(player)) {
-                player.die();
+                player.destroy();
                 e.destroy();
                 continue;
             }

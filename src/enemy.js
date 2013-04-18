@@ -70,7 +70,7 @@ Enemy.prototype.destroy = function () {
     var that = this;
 
     if (this.destroyed) {
-        return false;
+        return;
     }
 
     this.destroyed = true;
@@ -81,8 +81,6 @@ Enemy.prototype.destroy = function () {
         deallocateEnemy(that);
         delete enemies[that.id];
     }, this.dieDelay);
-
-    return true;
 };
 
 Enemy.prototype.strategy = function () {
