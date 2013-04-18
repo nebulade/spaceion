@@ -107,6 +107,23 @@ Player.prototype.destroy = function () {
     }, this.dieDelay);
 };
 
+Player.prototype.fireBullets = function (amount, angle) {
+    for (var i = 0; i < amount; ++i) {
+        var b = allocateBullet();
+        if (!b) {
+            break;
+        }
+
+        var j = i - (amount-1)/2;
+
+        b.x += j * 10;
+        b.y += Math.abs(j) * 20;
+        b.horizontal_speed = j * angle;
+
+        bullets[b.id] = b;
+    }
+};
+
 Player.prototype.shoot = function () {
     var that = this;
 
@@ -114,18 +131,10 @@ Player.prototype.shoot = function () {
         return;
     }
 
-    for (var i = 0; i < this.weapon.guns; ++i) {
-        var b = allocateBullet();
-        if (!b) {
-            break;
-        }
-
-        var j = i - (this.weapon.guns-1)/2;
-
-        b.x += j * 10;
-        b.y += Math.abs(j) * 10;
-
-        bullets[b.id] = b;
+    // this.weapon.guns = 5;
+    this.fireBullets(this.weapon.guns, 0);
+    if (this.level > 10) {
+        this.fireBullets(this.weapon.guns, 1.5);
     }
 
     this.cooldown = true;
