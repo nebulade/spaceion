@@ -1,7 +1,8 @@
 "use strict";
 
-function Element() {
+function Element(ctx) {
     this.id = Math.random();
+    this.ctx = ctx;
     this.x = 0;
     this.y = 0;
     this.w = 0;
@@ -17,6 +18,12 @@ function Element() {
     this.image = new Image();
     this.destroyed = false;
     this.energy = 100;
+    this.clearRect = {
+        x: this.x,
+        y: this.y,
+        w: this.w,
+        h: this.h
+    };
 
     return this;
 }
@@ -97,7 +104,11 @@ Element.prototype.advance = function () {
     this.updateBoundingRects();
 };
 
-Element.prototype.render = function (ctx) {
+Element.prototype.clear = function () {
+    this.ctx.clearRect(this.clearRect.x, this.clearRect.y, this.clearRect.w, this.clearRect.h);
+};
+
+Element.prototype.render = function () {
     if (!this.destroyed) {
         this.x += this.horizontal_speed;
         this.y += this.vertical_speed;
@@ -105,8 +116,14 @@ Element.prototype.render = function (ctx) {
 
     // for (var i = 0; i < this.boundingRects.length; ++i) {
     //     var b = this.boundingRects[i];
-    //     ctx.fillRect(b.x, b.y, b.w, b.h);
+    //     this.ctx.fillRect(b.x, b.y, b.w, b.h);
     // }
 
-    ctx.drawImage(this.image, this.x, this.y, this.w, this.h);
+    // preserve what we rendered
+    this.clearRect.x = this.x;
+    this.clearRect.y = this.y;
+    this.clearRect.w = this.w;
+    this.clearRect.h = this.h;
+
+    this.ctx.drawImage(this.image, this.x, this.y, this.w, this.h);
 };

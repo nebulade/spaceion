@@ -9,13 +9,10 @@ var enemies = enemies || {};
 var playerTouchOffset = 150;
 
 function Game() {
+    this.statCache = "";
     this.canvas = window.document.createElement('canvas');
     this.canvas.className = "Starfield";
     window.document.body.appendChild(this.canvas);
-
-    this.statsElement = document.createElement("div");
-    this.statsElement.className = "Stats";
-    window.document.body.appendChild(this.statsElement);
 
     this.ctx = this.canvas.getContext('2d');
 
@@ -34,62 +31,64 @@ Game.prototype.render = function () {
     this.canvas.height = this.h;
     this.canvas.style.left = this.x;
     this.canvas.style.top = this.y;
-    this.statsElement.style.left = this.x + 10;
-    this.statsElement.style.top = this.y + 10;
 };
 
+
 Game.prototype.updateStats = function () {
-    this.statsElement.innerHTML = "Lifes " + player.lifes + "  |  Score " + player.score;
+    this.statCache = "Lifes " + player.lifes + "  |  Score " + player.score;
 };
 
 var renderFps = {};
 renderFps.d = Date.now();
 renderFps.l = 0;
+renderFps.c = 0;
 function render() {
     var i;
 
-    if ((Date.now() - renderFps.d) >= 2000) {
-        console.log("RenderFPS: " + renderFps.l / 2.0);
+    if ((Date.now() - renderFps.d) >= 500) {
+        // console.log("RenderFPS: " + renderFps.l / 0.5);
+        renderFps.c = renderFps.l / 0.5;
         renderFps.d = Date.now();
         renderFps.l = 0;
     } else {
         ++(renderFps.l);
     }
 
-    // clear canvas
-    game.ctx.clearRect(0, 0, game.w, game.h);
-
-    starfield.render(game.ctx);
-
+    // clear
+    game.ctx.clearRect(0, 0, game.w, 20);
+    starfield.clear();
     for (i in enemies) {
         if (enemies.hasOwnProperty(i)) {
-            enemies[i].render(game.ctx);
+            enemies[i].clear();
         }
     }
-
     for (i in bullets) {
         if (bullets.hasOwnProperty(i)) {
-            bullets[i].render(game.ctx);
+            bullets[i].clear();
         }
     }
+    player.clear();
 
-    player.render(game.ctx);
+    // render
+    starfield.render();
+    for (i in enemies) {
+        if (enemies.hasOwnProperty(i)) {
+            enemies[i].render();
+        }
+    }
+    for (i in bullets) {
+        if (bullets.hasOwnProperty(i)) {
+            bullets[i].render();
+        }
+    }
+    player.render();
+
+    game.ctx.fillStyle = "#00aeef";
+    game.ctx.fillText(game.statCache + " | FPS: " + renderFps.c, 10, 10);
 }
-
-var gameLoops = {};
-gameLoops.d = Date.now();
-gameLoops.l = 0;
 
 function gameloop() {
     var i, j;
-
-    if ((Date.now() - gameLoops.d) >= 2000) {
-        console.log("Game loops: " + gameLoops.l / 2.0);
-        gameLoops.d = Date.now();
-        gameLoops.l = 0;
-    } else {
-        ++(gameLoops.l);
-    }
 
     starfield.advance();
 
@@ -192,7 +191,7 @@ function handleResizeEvents(event) {
 
 function initGame() {
     game = new Game();
-    starfield = new Starfield(game);
+    starfield = new Starfield(game.ctx);
     player = new Player();
     initBullets(100);
     initEnemies(10);

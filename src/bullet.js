@@ -20,7 +20,7 @@ function deallocateBullet(bullet) {
 }
 
 function Bullet () {
-    this.constructor();
+    this.constructor(game.ctx);
 
     // deviate from default
     this.boundingRects = [
@@ -62,6 +62,7 @@ Bullet.prototype.destroy = function () {
     this.image = this.explosionImage;
 
     window.setTimeout (function () {
+        that.clear();
         deallocateBullet(that);
         delete bullets[that.id];
     }, 400);

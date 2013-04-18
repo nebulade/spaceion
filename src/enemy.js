@@ -29,7 +29,7 @@ function spawnEnemy() {
 }
 
 function Enemy() {
-    this.constructor();
+    this.constructor(game.ctx);
 
     // deviate from the default
     this.w = 50;
@@ -77,6 +77,7 @@ Enemy.prototype.destroy = function () {
     this.image = this.explosionImage;
 
     window.setTimeout(function () {
+        that.clear();
         deallocateEnemy(that);
         delete enemies[that.id];
     }, this.dieDelay);

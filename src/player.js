@@ -28,7 +28,7 @@ function initWeapons() {
 }
 
 function Player() {
-    this.constructor();
+    this.constructor(game.ctx);
 
     this.w = 96/1.5;
     this.h = 96/1.5;
@@ -100,6 +100,7 @@ Player.prototype.die = function () {
     this.image = this.explosionImage;
 
     window.setTimeout(function () {
+        that.clear();
         that.reset();
     }, 1000);
 };
