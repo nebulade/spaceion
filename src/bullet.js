@@ -62,7 +62,7 @@ Bullet.prototype.destroy = function () {
     this.image = this.explosionImage;
 
     window.setTimeout (function () {
-        that.clear();
+        cleanupRects.push(that.clearRect);
         deallocateBullet(that);
         delete bullets[that.id];
     }, 400);

@@ -5,8 +5,9 @@ var game;
 var starfield;
 var bullets = bullets || {};
 var enemies = enemies || {};
+var cleanupRects = [];
 
-var playerTouchOffset = 150;
+var playerTouchOffset = 100;
 
 function Game() {
     this.statCache = "";
@@ -57,6 +58,10 @@ function render() {
     // clear
     game.ctx.clearRect(0, 0, game.w, 20);
     starfield.clear();
+    while (cleanupRects.length) {
+        var r = cleanupRects.shift();
+        game.ctx.clearRect(r.x, r.y, r.w, r.h);
+    }
     for (i in enemies) {
         if (enemies.hasOwnProperty(i)) {
             enemies[i].clear();

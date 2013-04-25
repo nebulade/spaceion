@@ -77,7 +77,7 @@ Enemy.prototype.destroy = function () {
     this.image = this.explosionImage;
 
     window.setTimeout(function () {
-        that.clear();
+        cleanupRects.push(that.clearRect);
         deallocateEnemy(that);
         delete enemies[that.id];
     }, this.dieDelay);
