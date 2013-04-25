@@ -10,11 +10,18 @@ var playerTouchOffset = 150;
 
 function Game() {
     this.statCache = "";
+
     this.canvas = window.document.createElement('canvas');
-    this.canvas.className = "Starfield";
+    this.canvas.className = "Battlefield";
+
+    this.backgroundCanvas = window.document.createElement('canvas');
+    this.backgroundCanvas.className = "Starfield";
+
+    window.document.body.appendChild(this.backgroundCanvas);
     window.document.body.appendChild(this.canvas);
 
     this.ctx = this.canvas.getContext('2d');
+    this.backgroundCtx = this.backgroundCanvas.getContext('2d');
 
     this.render();
 
@@ -31,6 +38,11 @@ Game.prototype.render = function () {
     this.canvas.height = this.h;
     this.canvas.style.left = this.x;
     this.canvas.style.top = this.y;
+
+    this.backgroundCanvas.width = this.w;
+    this.backgroundCanvas.height = this.h;
+    this.backgroundCanvas.style.left = this.x;
+    this.backgroundCanvas.style.top = this.y;
 };
 
 
@@ -56,7 +68,7 @@ function render() {
 
     // clear
     game.ctx.clearRect(0, 0, game.w, 20);
-    starfield.clear();
+    // starfield.clear();
     for (i in enemies) {
         if (enemies.hasOwnProperty(i)) {
             enemies[i].clear();
@@ -70,7 +82,7 @@ function render() {
     player.clear();
 
     // render
-    starfield.render();
+    // starfield.render();
     for (i in enemies) {
         if (enemies.hasOwnProperty(i)) {
             enemies[i].render();
@@ -85,6 +97,11 @@ function render() {
 
     game.ctx.fillStyle = "#00aeef";
     game.ctx.fillText(game.statCache + " | FPS: " + renderFps.c, 10, 10);
+}
+
+function renderBackground() {
+    starfield.clear();
+    starfield.render();
 }
 
 function gameloop() {
@@ -191,7 +208,7 @@ function handleResizeEvents(event) {
 
 function initGame() {
     game = new Game();
-    starfield = new Starfield(game.ctx);
+    starfield = new Starfield(game.backgroundCtx);
     player = new Player();
     initBullets(100);
     initEnemies(10);
@@ -217,4 +234,5 @@ function initGame() {
 
     window.setInterval(gameloop, 1000 / 30);
     window.setInterval(render, 1000 / 60);
+    window.setInterval(renderBackground, 1000 / 30);
 }

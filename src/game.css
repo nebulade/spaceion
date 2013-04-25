@@ -74,3 +74,8 @@ body, html {
     background-color: black;
     position: absolute;
 }
+
+.Battlefield {
+    background-color: transparent;
+    position: absolute;
+}
