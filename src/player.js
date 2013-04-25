@@ -192,10 +192,10 @@ Player.prototype.advance = function () {
             this.horizontal_speed = 0;
     }
 
-    if ((this.x + this.w) > game.w) {
+    if ((this.x + this.w) >= game.w && this.horizontal_speed > 0) {
         this.x = (game.w - this.w);
         this.horizontal_speed = 0;
-    } else if (this.x < 0) {
+    } else if (this.x <= 0 && this.horizontal_speed < 0) {
         this.x = 0;
         this.horizontal_speed = 0;
     }
