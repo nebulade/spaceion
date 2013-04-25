@@ -7,10 +7,9 @@ function Starfield (ctx) {
     this.x = 0;
     this.y = 0;
 
-    this.stars = new Array(50);
+    this.stars = new Array(30);
 
-    for (var i = 0; i < this.stars.length; i++) {
-        // this.stars[i] = new Array(10);
+    for (var i = 0; i < this.stars.length; ++i) {
         this.stars[i] = {};
         this.initStar(this.stars[i], true);
     }
@@ -49,7 +48,7 @@ Starfield.prototype.initStar = function (star, initial) {
 };
 
 Starfield.prototype.advance = function () {
-    for(var i = 0; i < this.stars.length; i++) {
+    for(var i = 0; i < this.stars.length; ++i) {
         var star = this.stars[i];
 
         if (star.z < 0 || star.dx > this.w || star.dx < 0 || star.dy > (this.h - 5 - 20 - 5 ) || star.dy < 0) {
@@ -72,14 +71,14 @@ Starfield.prototype.advance = function () {
 };
 
 Starfield.prototype.clear = function () {
-    for(var i = 0; i < this.stars.length; i++) {
+    for(var i = 0; i < this.stars.length; ++i) {
         var rect = this.stars[i].clearRect;
         this.ctx.clearRect(rect.x-1, rect.y-1, rect.size+2, rect.size+2);
     }
 };
 
 Starfield.prototype.render = function () {
-    for(var i = 0; i < this.stars.length; i++) {
+    for(var i = 0; i < this.stars.length; ++i) {
         var star = this.stars[i];
 
         star.clearRect.x = star.dx;

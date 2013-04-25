@@ -35,10 +35,6 @@ Game.prototype.render = function () {
 };
 
 
-Game.prototype.updateStats = function () {
-    this.statCache = "Lifes " + player.lifes + "  |  Score " + player.score;
-};
-
 var renderFps = {};
 renderFps.d = Date.now();
 renderFps.l = 0;
@@ -89,7 +85,7 @@ function render() {
     player.render();
 
     game.ctx.fillStyle = "#00aeef";
-    game.ctx.fillText(game.statCache + " | FPS: " + renderFps.c, 10, 10);
+    game.ctx.fillText(game.statCache, 10, 10);
 }
 
 function gameloop() {
@@ -139,7 +135,7 @@ function gameloop() {
         }
     }
 
-    game.updateStats();
+    game.statCache = "Lifes " + player.lifes + "  |  Score " + player.score + " | FPS: " + renderFps.c;
 }
 
 function handleKeyDownEvents(event) {
